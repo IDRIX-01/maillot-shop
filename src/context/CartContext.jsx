@@ -16,9 +16,23 @@ export function CartProvider({ children }) {
   }, [cart]);
 
   const addToCart = (item) => {
-    setCart((prev) => [...prev, item]);
-  };
+  setCart((prev) => {
+    const newItem = {
+      id: item.id || Date.now(), 
+      name: item.name || "Produit",
+      image: item.image || "",
+      size: item.size || "",
+      type: item.type || "",   
+      year: item.year || "",   
+      playerName: item.playerName || "",
+      playerNumber: item.playerNumber || "",
+      quantity: item.quantity || 1,
+      price: item.price || 0,
+    };
 
+    return [...prev, newItem];
+  });
+};
   const removeFromCart = (index) => {
     setCart((prev) => prev.filter((_, i) => i !== index));
   };

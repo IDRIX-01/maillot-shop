@@ -58,22 +58,41 @@ export default function Navbar({ search, setSearch, onCartClick }) {
             <div style={styles.avatarCircle}>KS</div>
           </button>
 
-          {dropdownOpen && (
-            <div style={styles.dropdown}>
-              <div style={styles.dropHeader}>
-                <p style={styles.userName}>KONE SIE</p>
-                <p style={styles.userRole}>Technician</p>
-              </div>
-              <div style={styles.dropBody}>
-                {["❓ Aide", "ℹ️ À propos", "⚙️ Mes préférences"].map((label) => (
-                  <button key={label} style={styles.dropItem}>{label}</button>
-                ))}
-                <button style={{ ...styles.dropItem, color: "#e53e3e", fontWeight: "700" }}>
-                  ⏻ Déconnexion
-                </button>
-              </div>
-            </div>
-          )}
+        {dropdownOpen && (
+  <div style={styles.dropdown}>
+    
+    {user ? (
+      <>
+        <div style={styles.dropHeader}>
+          <p style={styles.userName}>{user.name}</p>
+          <p style={styles.userRole}>{user.role}</p>
+        </div>
+
+        <div style={styles.dropBody}>
+          {["❓ Aide", "ℹ️ À propos", "⚙️ Mes préférences"].map((label) => (
+            <button key={label} style={styles.dropItem}>
+              {label}
+            </button>
+          ))}
+
+          <button
+            onClick={logout}
+            style={{ ...styles.dropItem, color: "#e53e3e", fontWeight: "700" }}
+          >
+            ⏻ Déconnexion
+          </button>
+        </div>
+      </>
+    ) : (
+      <div style={styles.dropBody}>
+        <button onClick={login} style={styles.dropItem}>
+          🔐 Se connecter
+        </button>
+      </div>
+    )}
+
+  </div>
+)}
         </div>
       </div>
     </header>
