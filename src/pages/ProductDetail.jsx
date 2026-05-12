@@ -11,7 +11,7 @@ export default function ProductDetail({ product, onBack }) {
 
   const nameLetters = playerName.replace(/[^A-Za-zÀ-ÿ]/g, "").length;
   const numberDigits = playerNumber.replace(/\D/g, "").length;
-  const flocage = nameLetters + numberDigits;
+  const flocage = nameLetters*300 + numberDigits*300;
   const total = (product.price + flocage) * quantity;
 
   function handleSubmit(e) {
@@ -56,7 +56,7 @@ export default function ProductDetail({ product, onBack }) {
         {/* Right - form */}
         <div style={styles.formSide}>
           <h1 style={styles.title}>{product.name}</h1>
-          <p style={styles.basePrice}>Prix de base : <strong>{product.price} €</strong></p>
+          <p style={styles.basePrice}>Prix de base : <strong>{product.price} FCFA</strong></p>
 
           <form onSubmit={handleSubmit} style={styles.form}>
             <Field label="Nom floqué">
@@ -103,13 +103,13 @@ export default function ProductDetail({ product, onBack }) {
 
             {flocage > 0 && (
               <div style={styles.flocageNote}>
-                ✂️ Flocage : +{flocage} € ({nameLetters} lettres + {numberDigits} chiffres)
+                ✂️ Flocage : +{flocage} FCFA ({nameLetters} lettres + {numberDigits} chiffres)
               </div>
             )}
 
             <div style={styles.totalBox}>
               <span>Prix total</span>
-              <span style={styles.totalAmt}>{total} €</span>
+              <span style={styles.totalAmt}>{total} FCFA</span>
             </div>
 
             <button type="submit" style={{ ...styles.addBtn, background: added ? "#2e7d32" : "linear-gradient(90deg, #302b63, #0f0c29)" }}>
