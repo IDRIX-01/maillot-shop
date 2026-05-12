@@ -48,7 +48,7 @@ export default function HomePage({ search, onSelectProduct }) {
       <footer style={styles.footer}>
         <div style={styles.footerGrid}>
           <div>
-            <h3 style={styles.footerHead}>BoutiqueMaillot</h3>
+            <h3 style={styles.footerHead}>Boutique de Maillot</h3>
             <p style={styles.footerText}>Maillots officiels, personnalisés et livrés partout</p>
             <p style={styles.footerText}>📍 Abidjan, Côte d'Ivoire</p>
           </div>
@@ -60,9 +60,9 @@ export default function HomePage({ search, onSelectProduct }) {
           </div>
           <div>
             <h3 style={styles.footerHead}>Contact</h3>
-            <p style={styles.footerText}>📧 boutiquedemaillot@africa.com</p>
+            <p style={styles.footerText}>📧 boutiquedemaillot@ivorycoast.com</p>
             <p style={styles.footerText}>📞 +225 01 43 02 23 55</p>
-            <p style={styles.footerText}>📞 +225 05 03 36 49 18</p>
+            <p style={styles.footerText}>📞 +225 05 66 63 69 53</p>
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
               <a href="https://wa.me/2250143022355?text=Bonjour%20je%20suis%20intéressé%20par%20un%20maillot" target="_blank" rel="noreferrer" style={styles.socialBtn}>💬</a>
               <span style={styles.socialBtn}>📘</span>
@@ -80,7 +80,7 @@ export default function HomePage({ search, onSelectProduct }) {
           </div>
         </div>
         <div style={styles.footerBottom}>
-          <p>© 2025 BoutiqueMaillot · Designed by KONE SIE DRISSA</p>
+          <p>© 2026 Boutique_Maillot · Production KONE SIE DRISSA</p>
         </div>
       </footer>
     </div>
