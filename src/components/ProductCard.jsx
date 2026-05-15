@@ -37,7 +37,7 @@ export default function ProductCard({ product, onClick }) {
       <div style={styles.info}>
         <h3 style={styles.name}>{product.name}</h3>
         <div style={styles.priceRow}>
-          <span style={styles.price}>{product.price} €</span>
+          <span style={styles.price}>{product.price} FCFA</span>
           <span style={styles.tag}>⚡ En stock</span>
         </div>
       </div>

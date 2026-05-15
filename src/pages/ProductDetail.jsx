@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 
 export default function ProductDetail({ product, onBack }) {
@@ -11,8 +11,12 @@ export default function ProductDetail({ product, onBack }) {
 
   const nameLetters = playerName.replace(/[^A-Za-zÀ-ÿ]/g, "").length;
   const numberDigits = playerNumber.replace(/\D/g, "").length;
-  const flocage = nameLetters + numberDigits;
+  const flocage = nameLetters * 300 + numberDigits * 300;
   const total = (product.price + flocage) * quantity;
+ const handleConfirm = () => {
+    onAddToCart({ product, type, year });
+    onClose();
+  };
 
   function handleSubmit(e) {
     e.preventDefault();
@@ -23,6 +27,8 @@ export default function ProductDetail({ product, onBack }) {
       size,
       quantity,
       playerName,
+      type,
+      year,
       playerNumber,
       price: total,
     });
@@ -41,7 +47,10 @@ export default function ProductDetail({ product, onBack }) {
             src={product.image}
             alt={product.name}
             style={styles.img}
-            onError={(e) => { e.target.style.display = "none"; e.target.nextSibling.style.display = "block"; }}
+            onError={(e) => {
+              e.target.style.display = "none";
+              e.target.nextSibling.style.display = "block";
+            }}
           />
           <div style={{ display: "none", fontSize: "80px", textAlign: "center" }}>⚽</div>
           <div style={{ ...styles.colorDot, background: product.color }} />
@@ -56,9 +65,9 @@ export default function ProductDetail({ product, onBack }) {
         {/* Right - form */}
         <div style={styles.formSide}>
           <h1 style={styles.title}>{product.name}</h1>
-          <p style={styles.basePrice}>Prix de base : <strong>{product.price} €</strong></p>
+          <p style={styles.basePrice}>Prix de base : <strong>{product.price} FCFA</strong></p>
 
-          <form onSubmit={handleSubmit} style={styles.form}>
+          <form onSubmit={handleSubmit,handleConfirm} style={styles.form}>
             <Field label="Nom floqué">
               <input
                 type="text"
@@ -103,16 +112,24 @@ export default function ProductDetail({ product, onBack }) {
 
             {flocage > 0 && (
               <div style={styles.flocageNote}>
-                ✂️ Flocage : +{flocage} € ({nameLetters} lettres + {numberDigits} chiffres)
+                ✂️ Flocage : +{flocage} FCFA ({nameLetters} lettres + {numberDigits} chiffres)
               </div>
             )}
 
             <div style={styles.totalBox}>
               <span>Prix total</span>
-              <span style={styles.totalAmt}>{total} €</span>
+              <span style={styles.totalAmt}>{total} FCFA</span>
             </div>
 
-            <button type="submit" style={{ ...styles.addBtn, background: added ? "#2e7d32" : "linear-gradient(90deg, #302b63, #0f0c29)" }}>
+            <button
+              type="submit"
+              style={{
+                ...styles.addBtn,
+                background: added
+                  ? "#2e7d32"
+                  : "linear-gradient(90deg, #302b63, #0f0c29)",
+              }} onClick={handleConfirm}
+            >
               {added ? "✓ Ajouté au panier !" : "🛒 Ajouter au panier"}
             </button>
           </form>
@@ -125,7 +142,17 @@ export default function ProductDetail({ product, onBack }) {
 function Field({ label, children }) {
   return (
     <div style={{ marginBottom: "14px" }}>
-      <label style={{ display: "block", fontWeight: "700", fontSize: "12px", color: "#666", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</label>
+      <label style={{
+        display: "block",
+        fontWeight: "700",
+        fontSize: "12px",
+        color: "#666",
+        marginBottom: "6px",
+        textTransform: "uppercase",
+        letterSpacing: "0.5px",
+      }}>
+        {label}
+      </label>
       {children}
     </div>
   );
@@ -141,7 +168,7 @@ const styles = {
     paddingRight: "20px",
   },
   back: {
-    background: "none",
+    background: "#fff",
     border: "none",
     color: "#302b63",
     fontSize: "14px",
@@ -150,7 +177,6 @@ const styles = {
     marginBottom: "20px",
     padding: "8px 16px",
     borderRadius: "8px",
-    background: "#fff",
     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
   },
   card: {

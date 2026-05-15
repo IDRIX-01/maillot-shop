@@ -1,8 +1,162 @@
 import { useState } from "react";
 import ProductCard from "../components/ProductCard";
 import { products } from "../data/products";
+import { useCart } from "../context/CartContext";
+
+// ─── JerseyDialog ────────────────────────────────────────────────────────────
+
+const TYPES = [
+  { key: "home",       label: "Home" },
+  { key: "away",       label: "Away" },
+  { key: "third",      label: "Third" },
+  { key: "goalkeeper", label: "Gardien" },
+];
+
+const YEARS = ["2024-25", "2023-24", "2022-23", "2021-22", "2020-21"];
+
+function JerseyDialog({ product, onClose, onAddToCart, onGoToDetail }) {
+  const [type, setType] = useState("home");
+  const [year, setYear] = useState("2024-25");
+
+  if (!product) return null;
+
+  const handleConfirm = () => {
+    onAddToCart({ product, type, year });
+    onClose();
+  };
+
+  return (
+    <div style={dialogStyles.overlay} onClick={onClose}>
+      <div style={dialogStyles.dialog} onClick={(e) => e.stopPropagation()}>
+
+        {/* Header */}
+        <div style={dialogStyles.header}>
+          <div>
+            <p style={dialogStyles.title}>{product.name}</p>
+            <p style={dialogStyles.subtitle}>Choisissez votre maillot</p>
+          </div>
+          <button style={dialogStyles.closeBtn} onClick={onClose}>✕</button>
+        </div>
+
+        {/* Body */}
+        <div style={dialogStyles.body}>
+          <p style={dialogStyles.sectionLabel}>Type</p>
+          <div style={dialogStyles.chipGroup}>
+            {TYPES.map((t) => (
+              <button
+                key={t.key}
+                style={{
+                  ...dialogStyles.chip,
+                  ...(type === t.key ? dialogStyles.chipActive : {}),
+                }}
+                onClick={() => setType(t.key)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+
+          <p style={dialogStyles.sectionLabel}>Saison</p>
+          <select
+            value={year}
+            onChange={(e) => setYear(e.target.value)}
+            style={dialogStyles.select}
+          >
+            {YEARS.map((y) => (
+              <option key={y} value={y}>
+                {y.replace("-", "–")}
+              </option>
+            ))}
+          </select>
+
+          {/* Preview */}
+          <div style={dialogStyles.preview}>
+            <span style={{ fontSize: 32 }}>👕</span>
+            <div>
+              <p style={dialogStyles.previewName}>
+                {product.name} — {TYPES.find((t) => t.key === type)?.label}
+              </p>
+              <p style={dialogStyles.previewMeta}>
+                Saison {year.replace("-", "–")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Footer — 3 boutons distincts */}
+        <div style={dialogStyles.footer}>
+          <button style={dialogStyles.btnCancel} onClick={onClose}>
+            Annuler
+          </button>
+          <button
+            style={dialogStyles.btnDetail}
+            onClick={() => {
+              onClose();
+              onGoToDetail(product);
+              handleConfirm;
+            }}
+            
+          >
+            Voir détails
+          </button>
+          <button style={dialogStyles.btnConfirm} onClick={handleConfirm}>
+            🛒 Ajouter au panier
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+const dialogStyles = {
+  overlay: {
+    position: "fixed",
+    inset: 0,
+    background: "rgba(0,0,0,0.45)",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 1000,
+  },
+  dialog: {
+    background: "#fff",
+    borderRadius: 12,
+    width: "90%",
+    maxWidth: 480,
+    overflow: "hidden",
+    boxShadow: "0 8px 32px rgba(0,0,0,0.18)",
+  },
+  header: {
+    padding: "1.25rem 1.5rem 1rem",
+    borderBottom: "1px solid #eee",
+    display: "flex",
+    alignItems: "flex-start",
+    justifyContent: "space-between",
+  },
+  title:        { margin: 0, fontSize: 16, fontWeight: 500 },
+  subtitle:     { margin: "2px 0 0", fontSize: 13, color: "#888" },
+  closeBtn:     { background: "none", border: "none", fontSize: 18, cursor: "pointer", color: "#888", padding: 4 },
+  body:         { padding: "1.25rem 1.5rem" },
+  sectionLabel: { fontSize: 12, fontWeight: 600, color: "#888", textTransform: "uppercase", letterSpacing: "0.06em", margin: "0 0 10px" },
+  chipGroup:    { display: "flex", gap: 8, flexWrap: "wrap", marginBottom: "1.25rem" },
+  chip:         { padding: "6px 16px", borderRadius: 999, border: "1px solid #ddd", background: "#fff", fontSize: 14, cursor: "pointer" },
+  chipActive:   { background: "#E6F1FB", borderColor: "#378ADD", color: "#0C447C", fontWeight: 500 },
+  select:       { width: "100%", fontSize: 14, padding: "8px 12px", borderRadius: 8, border: "1px solid #ddd", marginBottom: "1.25rem" },
+  preview:      { background: "#f5f5f5", borderRadius: 8, padding: "1rem", display: "flex", alignItems: "center", gap: 14 },
+  previewName:  { margin: "0 0 3px", fontSize: 15, fontWeight: 500 },
+  previewMeta:  { margin: 0, fontSize: 13, color: "#888" },
+  footer:       { padding: "1rem 1.5rem", borderTop: "1px solid #eee", display: "flex", gap: 10, justifyContent: "flex-end" },
+  btnCancel:    { padding: "8px 20px", borderRadius: 8, border: "1px solid #ddd", background: "transparent", fontSize: 14, cursor: "pointer" },
+  btnDetail:    { padding: "8px 20px", borderRadius: 8, border: "1px solid #378ADD", background: "transparent", color: "#378ADD", fontSize: 14, fontWeight: 500, cursor: "pointer" },
+  btnConfirm:   { padding: "8px 20px", borderRadius: 8, border: "none", background: "#378ADD", color: "#fff", fontSize: 14, fontWeight: 500, cursor: "pointer" },
+};
+
+// ─── HomePage ─────────────────────────────────────────────────────────────────
 
 export default function HomePage({ search, onSelectProduct }) {
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const { addToCart } = useCart(); // ✅ récupération du contexte panier
+
   const filtered = products.filter((p) =>
     p.name.toLowerCase().includes(search.toLowerCase())
   );
@@ -13,7 +167,10 @@ export default function HomePage({ search, onSelectProduct }) {
       <div style={styles.hero}>
         <div style={styles.heroContent}>
           <div style={styles.heroBadge}>🏆 Collection 2025</div>
-          <h1 style={styles.heroTitle}>Maillots Officiels<br /><span style={styles.heroAccent}>Personnalisés</span></h1>
+          <h1 style={styles.heroTitle}>
+            Maillots Officiels<br />
+            <span style={styles.heroAccent}>Personnalisés</span>
+          </h1>
           <p style={styles.heroSub}>
             Abidjan, Côte d'Ivoire · Livraison partout · Flocage sur mesure
           </p>
@@ -27,7 +184,9 @@ export default function HomePage({ search, onSelectProduct }) {
           <h2 style={styles.sectionTitle}>
             {search ? `Résultats pour "${search}"` : "Tous les maillots"}
           </h2>
-          <span style={styles.sectionCount}>{filtered.length} article{filtered.length !== 1 ? "s" : ""}</span>
+          <span style={styles.sectionCount}>
+            {filtered.length} article{filtered.length !== 1 ? "s" : ""}
+          </span>
         </div>
 
         {filtered.length === 0 ? (
@@ -38,17 +197,41 @@ export default function HomePage({ search, onSelectProduct }) {
         ) : (
           <div style={styles.grid}>
             {filtered.map((product) => (
-              <ProductCard key={product.id} product={product} onClick={onSelectProduct} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                onClick={setSelectedProduct}
+              />
             ))}
           </div>
         )}
       </div>
 
+      {/* Dialog */}
+      <JerseyDialog
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+        onGoToDetail={(product) => {
+          setSelectedProduct(null);
+          onSelectProduct(product);
+        }}
+        onAddToCart={({ product, type, year }) => {
+          // ✅ CORRECTION : appel réel à addToCart avec type et year
+          addToCart({
+            ...product,
+            type,
+            year,
+            size: product.size || "M",
+            quantity: 1,
+          });
+        }}
+      />
+
       {/* Footer */}
       <footer style={styles.footer}>
         <div style={styles.footerGrid}>
           <div>
-            <h3 style={styles.footerHead}>BoutiqueMaillot</h3>
+            <h3 style={styles.footerHead}>Boutique de Maillot</h3>
             <p style={styles.footerText}>Maillots officiels, personnalisés et livrés partout</p>
             <p style={styles.footerText}>📍 Abidjan, Côte d'Ivoire</p>
           </div>
@@ -60,11 +243,18 @@ export default function HomePage({ search, onSelectProduct }) {
           </div>
           <div>
             <h3 style={styles.footerHead}>Contact</h3>
-            <p style={styles.footerText}>📧 boutiquedemaillot@africa.com</p>
+            <p style={styles.footerText}>📧 boutiquedemaillot@ivorycoast.com</p>
             <p style={styles.footerText}>📞 +225 01 43 02 23 55</p>
-            <p style={styles.footerText}>📞 +225 05 03 36 49 18</p>
+            <p style={styles.footerText}>📞 +225 05 66 63 69 53</p>
             <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
-              <a href="https://wa.me/2250143022355?text=Bonjour%20je%20suis%20intéressé%20par%20un%20maillot" target="_blank" rel="noreferrer" style={styles.socialBtn}>💬</a>
+              <a
+                href="https://wa.me/2250143022355?text=Bonjour%20je%20suis%20intéressé%20par%20un%20maillot"
+                target="_blank"
+                rel="noreferrer"
+                style={styles.socialBtn}
+              >
+                💬
+              </a>
               <span style={styles.socialBtn}>📘</span>
               <span style={styles.socialBtn}>📷</span>
               <span style={styles.socialBtn}>🐦</span>
@@ -80,7 +270,7 @@ export default function HomePage({ search, onSelectProduct }) {
           </div>
         </div>
         <div style={styles.footerBottom}>
-          <p>© 2025 BoutiqueMaillot · Designed by KONE SIE DRISSA</p>
+          <p>© 2026 Boutique_Maillot · Production KONE SIE DRISSA</p>
         </div>
       </footer>
     </div>

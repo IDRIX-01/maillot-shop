@@ -8,53 +8,77 @@ export default function CartPage({ onBack }) {
   function handleWhatsApp() {
     const lines = cart.map(
       (item, i) =>
-        `${i + 1}. ${item.name} (${item.size}) - Nom: ${item.playerName || "-"}, N°: ${item.playerNumber || "-"} x${item.quantity} = ${item.price}€`
+        `${i + 1}. ${item.name} (${item.size}) - Année: ${item.year}, Type: ${item.type}, Nom: ${item.playerName || "-"}, N°: ${item.playerNumber || "-"} x${item.quantity} = ${item.price}€`
     );
-    const msg = `Bonjour, je souhaite commander :\n${lines.join("\n")}\nTotal : ${grandTotal}€`;
-    window.open(`https://wa.me/2250143022355?text=${encodeURIComponent(msg)}`, "_blank");
+
+    const msg = `Bonjour, je souhaite commander :\n${lines.join("\n")}\n\nTotal : ${grandTotal}€`;
+
+    window.open(
+      `https://wa.me/2250143022355?text=${encodeURIComponent(msg)}`,
+      "_blank"
+    );
   }
 
   return (
     <div style={styles.page}>
       <div style={styles.container}>
         <div style={styles.topRow}>
-          <button onClick={onBack} style={styles.back}>← Retour boutique</button>
+          <button onClick={onBack} style={styles.back}>
+            ← Retour boutique
+          </button>
           <h1 style={styles.title}>🛒 Votre panier</h1>
-          <span style={styles.count}>{cart.length} article{cart.length !== 1 ? "s" : ""}</span>
+          <span style={styles.count}>
+            {cart.length} article{cart.length !== 1 ? "s" : ""}
+          </span>
         </div>
 
         {cart.length === 0 ? (
           <div style={styles.empty}>
             <span style={{ fontSize: "64px" }}>🛒</span>
-            <p style={{ color: "#aaa", fontSize: "18px", marginTop: "16px" }}>Votre panier est vide</p>
-            <button onClick={onBack} style={styles.shopBtn}>Découvrir les maillots</button>
+            <p style={{ color: "#aaa", fontSize: "18px", marginTop: "16px" }}>
+              Votre panier est vide
+            </p>
+            <button onClick={onBack} style={styles.shopBtn}>
+              Découvrir les maillots
+            </button>
           </div>
         ) : (
           <div style={styles.layout}>
             <div style={styles.items}>
               {cart.map((item, index) => (
-                <CartItem key={index} item={item} onRemove={() => removeFromCart(index)} />
+                <CartItem
+                  key={index}
+                  item={item}
+                  onRemove={() => removeFromCart(index)}
+                />
               ))}
             </div>
 
             <div style={styles.summary}>
               <h2 style={styles.sumTitle}>Récapitulatif</h2>
+
               <div style={styles.sumRow}>
                 <span>Sous-total</span>
-                <span>{grandTotal} €</span>
+                <span>{grandTotal} FCFA</span>
               </div>
+
               <div style={styles.sumRow}>
                 <span>Livraison</span>
                 <span style={{ color: "#2e7d32" }}>Gratuite</span>
               </div>
+
               <div style={{ ...styles.sumRow, ...styles.sumTotal }}>
                 <span>Total</span>
-                <span>{grandTotal} €</span>
+                <span>{grandTotal} FCFA</span>
               </div>
+
               <button onClick={handleWhatsApp} style={styles.whatsapp}>
-                <span>📲</span> Commander via WhatsApp
+                📲 Commander via WhatsApp
               </button>
-              <p style={styles.hint}>Vous serez redirigé vers WhatsApp pour finaliser votre commande</p>
+
+              <p style={styles.hint}>
+                Vous serez redirigé vers WhatsApp pour finaliser votre commande
+              </p>
             </div>
           </div>
         )}
@@ -71,21 +95,55 @@ function CartItem({ item, onRemove }) {
           src={item.image}
           alt={item.name}
           style={{ maxWidth: "80px", maxHeight: "80px", objectFit: "contain" }}
-          onError={(e) => { e.target.style.display = "none"; }}
+          onError={(e) => {
+            e.target.style.display = "none";
+          }}
         />
       </div>
+
       <div style={styles.itemInfo}>
         <h3 style={styles.itemName}>{item.name}</h3>
+
         <div style={styles.itemMeta}>
-          <span>Taille : <strong>{item.size}</strong></span>
-          {item.playerName && <span>Nom : <strong>{item.playerName}</strong></span>}
-          {item.playerNumber && <span>N° : <strong>{item.playerNumber}</strong></span>}
-          <span>Qté : <strong>{item.quantity}</strong></span>
+          {item.type && (
+            <span>
+              Type : <strong>{item.type}</strong>
+            </span>
+          )}
+
+          {item.year && (
+            <span>
+              Année : <strong>{item.year}</strong>
+            </span>
+          )}
+
+          <span>
+            Taille : <strong>{item.size}</strong>
+          </span>
+
+          {item.playerName && (
+            <span>
+              Nom : <strong>{item.playerName}</strong>
+            </span>
+          )}
+
+          {item.playerNumber && (
+            <span>
+              N° : <strong>{item.playerNumber}</strong>
+            </span>
+          )}
+
+          <span>
+            Qté : <strong>{item.quantity}</strong>
+          </span>
         </div>
       </div>
+
       <div style={styles.itemRight}>
-        <span style={styles.itemPrice}>{item.price} €</span>
-        <button onClick={onRemove} style={styles.removeBtn} title="Supprimer">🗑</button>
+        <span style={styles.itemPrice}>{item.price} FCFA</span>
+        <button onClick={onRemove} style={styles.removeBtn}>
+          🗑
+        </button>
       </div>
     </div>
   );
@@ -119,14 +177,12 @@ const styles = {
     cursor: "pointer",
     padding: "8px 16px",
     borderRadius: "8px",
-    boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
   },
   title: {
     margin: 0,
     fontSize: "24px",
     fontWeight: "800",
     color: "#1a1a2e",
-    fontFamily: "'Georgia', serif",
     flex: 1,
   },
   count: {
@@ -141,27 +197,22 @@ const styles = {
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    justifyContent: "center",
     padding: "80px 20px",
     background: "#fff",
     borderRadius: "20px",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.06)",
   },
   shopBtn: {
     marginTop: "20px",
-    background: "linear-gradient(90deg, #302b63, #0f0c29)",
+    background: "#302b63",
     color: "#fff",
     border: "none",
     padding: "12px 28px",
     borderRadius: "10px",
-    fontSize: "14px",
-    fontWeight: "700",
     cursor: "pointer",
   },
   layout: {
     display: "flex",
     gap: "24px",
-    alignItems: "flex-start",
     flexWrap: "wrap",
   },
   items: {
@@ -176,9 +227,8 @@ const styles = {
     borderRadius: "14px",
     padding: "16px 20px",
     display: "flex",
-    alignItems: "center",
     gap: "16px",
-    boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+    alignItems: "center",
   },
   itemImg: {
     width: "90px",
@@ -188,7 +238,6 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    flexShrink: 0,
   },
   itemInfo: {
     flex: 1,
@@ -197,8 +246,6 @@ const styles = {
     margin: "0 0 8px",
     fontSize: "15px",
     fontWeight: "700",
-    color: "#1a1a2e",
-    fontFamily: "'Georgia', serif",
   },
   itemMeta: {
     display: "flex",
@@ -224,38 +271,26 @@ const styles = {
     borderRadius: "8px",
     padding: "6px 10px",
     cursor: "pointer",
-    fontSize: "14px",
     color: "#e53e3e",
-    transition: "background 0.2s",
   },
   summary: {
     width: "280px",
     background: "#fff",
     borderRadius: "16px",
     padding: "24px",
-    boxShadow: "0 2px 16px rgba(0,0,0,0.08)",
-    flexShrink: 0,
   },
   sumTitle: {
-    margin: "0 0 20px",
-    fontSize: "16px",
-    fontWeight: "800",
-    color: "#1a1a2e",
+    marginBottom: "20px",
   },
   sumRow: {
     display: "flex",
     justifyContent: "space-between",
-    fontSize: "14px",
-    color: "#555",
     marginBottom: "12px",
   },
   sumTotal: {
-    borderTop: "2px solid #f0f0f0",
-    paddingTop: "14px",
-    marginTop: "8px",
-    fontSize: "17px",
+    borderTop: "1px solid #eee",
+    paddingTop: "10px",
     fontWeight: "800",
-    color: "#1a1a2e",
   },
   whatsapp: {
     width: "100%",
@@ -265,20 +300,13 @@ const styles = {
     border: "none",
     padding: "14px",
     borderRadius: "10px",
-    fontSize: "14px",
     fontWeight: "700",
     cursor: "pointer",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
-    transition: "background 0.2s",
-    boxSizing: "border-box",
   },
   hint: {
     fontSize: "11px",
-    color: "#aaa",
     textAlign: "center",
     marginTop: "10px",
+    color: "#aaa",
   },
 };
