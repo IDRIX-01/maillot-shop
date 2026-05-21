@@ -1,4 +1,5 @@
 import { useCart } from "../context/CartContext";
+import { ShoppingCart } from 'lucide-react';
 
 export default function CartPage({ onBack }) {
   const { cart, removeFromCart } = useCart();
@@ -26,13 +27,13 @@ export default function CartPage({ onBack }) {
 
         <div style={st.topRow}>
           <button onClick={onBack} style={st.back}>← Retour boutique</button>
-          <h1 style={st.title}>🛒 Votre panier</h1>
+          <h1 style={st.title}>  <ShoppingCart /> Votre panier</h1>
           <span style={st.count}>{cart.length} article{cart.length !== 1 ? "s" : ""}</span>
         </div>
 
         {cart.length === 0 ? (
           <div style={st.empty}>
-            <span style={{ fontSize: 64 }}>🛒</span>
+            <span style={{ fontSize: 64 }}><ShoppingCart /></span>
             <p style={{ color: "#aaa", fontSize: 18, marginTop: 16 }}>Votre panier est vide</p>
             <button onClick={onBack} style={st.shopBtn}>Découvrir les maillots</button>
           </div>

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { ShoppingCart } from 'lucide-react';
 
 const TYPES = [
   { key: "home",       label: "Home" },
@@ -7,7 +8,7 @@ const TYPES = [
   { key: "goalkeeper", label: "Gardien" },
 ];
 
-const YEARS = ["2024-25", "2023-24", "2022-23", "2021-22", "2020-21"];
+const YEARS = ["2024-25", "2023-24", "2022-23", "2021-22", "2020-21","2019-20","2018-19","2017-18","2016-17","2015-16"];
 const SIZES = ["XS", "S", "M", "L", "XL", "XXL", "3XL"];
 
 export default function JerseyDialog({ product, onClose, onAddToCart, onGoToDetail }) {
@@ -200,7 +201,14 @@ export default function JerseyDialog({ product, onClose, onAddToCart, onGoToDeta
             onClick={handleConfirm}
             disabled={added}
           >
-            {added ? "✓ Ajouté !" : "🛒 Ajouter au panier"}
+            {added ? (
+    "✓ Ajouté !"
+  ) : (
+    <>
+      <ShoppingCart size={18} />
+      Ajouter au panier
+    </>
+  )}
           </button>
         </div>
       </div>

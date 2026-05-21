@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
+import FootballBackground from "./components/FootballBackground";
 import HomePage from "./pages/HomePage";
 import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
@@ -26,23 +27,30 @@ export default function App() {
 
   return (
     <CartProvider>
-      <Navbar
-        search={search}
-        setSearch={setSearch}
-        onCartClick={openCart}
-      />
+      {/* Background football fixé sur toutes les pages */}
+      <FootballBackground />
 
-      {page === "home" && (
-        <HomePage search={search} onSelectProduct={openProduct} />
-      )}
+      {/* Contenu au-dessus du background */}
+      <div style={{ position: "relative", zIndex: 1 }}>
+        <Navbar
+          search={search}
+          setSearch={setSearch}
+          onCartClick={openCart}
+          onBack={goHome}
+        />
 
-      {page === "detail" && selectedProduct && (
-        <ProductDetail product={selectedProduct} onBack={goHome} />
-      )}
+        {page === "home" && (
+          <HomePage search={search} onSelectProduct={openProduct} />
+        )}
 
-      {page === "cart" && (
-        <CartPage onBack={goHome} />
-      )}
+        {page === "detail" && selectedProduct && (
+          <ProductDetail product={selectedProduct} onBack={goHome} />
+        )}
+
+        {page === "cart" && (
+          <CartPage onBack={goHome} />
+        )}
+      </div>
     </CartProvider>
   );
 }

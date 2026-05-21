@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useCart } from "../context/CartContext";
 
 export default function ProductDetail({ product, onBack }) {
@@ -112,7 +112,13 @@ export default function ProductDetail({ product, onBack }) {
               <span style={styles.totalAmt}>{total} €</span>
             </div>
 
-            <button type="submit" style={{ ...styles.addBtn, background: added ? "#2e7d32" : "linear-gradient(90deg, #302b63, #0f0c29)" }}>
+            <button
+              type="submit"
+              style={{
+                ...styles.addBtn,
+                background: added ? "#2e7d32" : "linear-gradient(90deg, #302b63, #0f0c29)",
+              }}
+            >
               {added ? "✓ Ajouté au panier !" : "🛒 Ajouter au panier"}
             </button>
           </form>
@@ -125,7 +131,19 @@ export default function ProductDetail({ product, onBack }) {
 function Field({ label, children }) {
   return (
     <div style={{ marginBottom: "14px" }}>
-      <label style={{ display: "block", fontWeight: "700", fontSize: "12px", color: "#666", marginBottom: "6px", textTransform: "uppercase", letterSpacing: "0.5px" }}>{label}</label>
+      <label
+        style={{
+          display: "block",
+          fontWeight: "700",
+          fontSize: "12px",
+          color: "#666",
+          marginBottom: "6px",
+          textTransform: "uppercase",
+          letterSpacing: "0.5px",
+        }}
+      >
+        {label}
+      </label>
       {children}
     </div>
   );
@@ -134,14 +152,15 @@ function Field({ label, children }) {
 const styles = {
   page: {
     minHeight: "100vh",
-    background: "#f4f6fb",
+    /* ↓ transparent pour laisser apparaître FootballBackground */
+    background: "transparent",
     paddingTop: "86px",
     paddingBottom: "40px",
     paddingLeft: "20px",
     paddingRight: "20px",
   },
   back: {
-    background: "none",
+    background: "#fff",
     border: "none",
     color: "#302b63",
     fontSize: "14px",
@@ -150,7 +169,6 @@ const styles = {
     marginBottom: "20px",
     padding: "8px 16px",
     borderRadius: "8px",
-    background: "#fff",
     boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
   },
   card: {

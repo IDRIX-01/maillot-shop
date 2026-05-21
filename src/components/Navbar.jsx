@@ -1,34 +1,26 @@
-import { useState, useRef, useEffect } from "react";
+import { Search, ShoppingCart } from "lucide-react";
 import { useCart } from "../context/CartContext";
+import HeaderAccount from "./HeaderAccount";
 
-export default function Navbar({ search, setSearch, onCartClick }) {
+export default function Navbar({ search, setSearch, onCartClick, onBack }) {
   const { totalItems } = useCart();
-  const [dropdownOpen, setDropdownOpen] = useState(false);
-  const dropdownRef = useRef(null);
-
-  useEffect(() => {
-    function handleClickOutside(e) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-        setDropdownOpen(false);
-      }
-    }
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   return (
     <header style={styles.header}>
       {/* Logo */}
       <div style={styles.logoArea}>
-        <div style={styles.logoCircle}>
-          <span style={styles.logoText}>⚽</span>
-        </div>
-        <span style={styles.brandName}>BoutiqueMaillot</span>
+        <div style={styles.logoCircle}>⚽</div>
+        <button
+          onClick={onBack}
+          style={styles.brandName}
+        >
+          BoutiqueMaillot
+        </button>
       </div>
 
-      {/* Search */}
+      {/* Recherche */}
       <div style={styles.searchWrap}>
-        <span style={styles.searchIcon}>🔍</span>
+        <span style={styles.searchIcon}><Search /></span>
         <input
           type="text"
           placeholder="Rechercher un maillot..."
@@ -38,43 +30,18 @@ export default function Navbar({ search, setSearch, onCartClick }) {
         />
       </div>
 
-      {/* Right */}
+      {/* Actions */}
       <div style={styles.rightArea}>
-        {/* Cart */}
+        {/* Panier */}
         <button onClick={onCartClick} style={styles.cartBtn}>
-          🛒
+          <ShoppingCart />
           {totalItems > 0 && (
             <span style={styles.badge}>{totalItems}</span>
           )}
         </button>
 
-        {/* User menu */}
-        <div ref={dropdownRef} style={{ position: "relative" }}>
-          <button
-            onClick={() => setDropdownOpen((o) => !o)}
-            style={styles.avatarBtn}
-            title="Mon compte"
-          >
-            <div style={styles.avatarCircle}>KS</div>
-          </button>
-
-          {dropdownOpen && (
-            <div style={styles.dropdown}>
-              <div style={styles.dropHeader}>
-                <p style={styles.userName}>KONE SIE</p>
-                <p style={styles.userRole}>Technician</p>
-              </div>
-              <div style={styles.dropBody}>
-                {["❓ Aide", "ℹ️ À propos", "⚙️ Mes préférences"].map((label) => (
-                  <button key={label} style={styles.dropItem}>{label}</button>
-                ))}
-                <button style={{ ...styles.dropItem, color: "#e53e3e", fontWeight: "700" }}>
-                  ⏻ Déconnexion
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Compte */}
+        <HeaderAccount />
       </div>
     </header>
   );
@@ -82,151 +49,107 @@ export default function Navbar({ search, setSearch, onCartClick }) {
 
 const styles = {
   header: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    padding: "0 24px",
-    height: "66px",
-    background: "linear-gradient(90deg, #0f0c29, #302b63, #24243e)",
     position: "fixed",
     top: 0,
     left: 0,
     right: 0,
-    zIndex: 1000,
-    boxShadow: "0 2px 20px rgba(0,0,0,0.4)",
+    zIndex: 100,
+    height: "66px",
+    background: "linear-gradient(135deg, rgba(15,12,41,0.97) 0%, rgba(48,43,99,0.97) 100%)",
+    display: "flex",
+    alignItems: "center",
+    padding: "0 24px",
+    gap: "16px",
+    boxShadow: "0 2px 16px rgba(0,0,0,0.25)",
   },
   logoArea: {
     display: "flex",
     alignItems: "center",
     gap: "10px",
-    textDecoration: "none",
+    flexShrink: 0,
   },
   logoCircle: {
-    width: "38px",
-    height: "38px",
+    width: "36px",
+    height: "36px",
+    background: "rgba(255,255,255,0.1)",
     borderRadius: "50%",
-    background: "linear-gradient(135deg, #f6d365, #fda085)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    fontSize: "20px",
+    fontSize: "18px",
   },
-  logoText: { fontSize: "20px" },
   brandName: {
+    background: "none",
+    border: "none",
     color: "#fff",
+    fontSize: "16px",
+    fontWeight: "800",
+    cursor: "pointer",
     fontFamily: "'Georgia', serif",
-    fontWeight: "700",
-    fontSize: "17px",
     letterSpacing: "0.5px",
+    padding: 0,
   },
   searchWrap: {
     flex: 1,
-    maxWidth: "420px",
-    margin: "0 24px",
     position: "relative",
-    display: "flex",
-    alignItems: "center",
+    maxWidth: "480px",
   },
   searchIcon: {
     position: "absolute",
     left: "12px",
-    fontSize: "14px",
-    opacity: 0.6,
+    top: "50%",
+    transform: "translateY(-50%)",
+    color: "rgba(255,255,255,0.4)",
+    display: "flex",
+    alignItems: "center",
+    pointerEvents: "none",
   },
   searchInput: {
     width: "100%",
-    padding: "9px 14px 9px 36px",
-    borderRadius: "24px",
-    border: "1.5px solid rgba(255,255,255,0.2)",
-    background: "rgba(255,255,255,0.1)",
+    padding: "9px 14px 9px 40px",
+    borderRadius: "10px",
+    border: "1.5px solid rgba(255,255,255,0.15)",
+    background: "rgba(255,255,255,0.08)",
     color: "#fff",
     fontSize: "14px",
     outline: "none",
-    backdropFilter: "blur(6px)",
     boxSizing: "border-box",
+    fontFamily: "inherit",
   },
   rightArea: {
     display: "flex",
     alignItems: "center",
-    gap: "16px",
+    gap: "12px",
+    marginLeft: "auto",
+    flexShrink: 0,
   },
   cartBtn: {
     position: "relative",
     background: "rgba(255,255,255,0.1)",
-    border: "1.5px solid rgba(255,255,255,0.2)",
-    borderRadius: "50%",
-    width: "42px",
-    height: "42px",
-    fontSize: "18px",
-    cursor: "pointer",
+    border: "none",
+    color: "#fff",
+    width: "40px",
+    height: "40px",
+    borderRadius: "10px",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    transition: "background 0.2s",
+    cursor: "pointer",
+    fontSize: "20px",
   },
   badge: {
     position: "absolute",
-    top: "-5px",
-    right: "-5px",
-    background: "#ff4d4d",
+    top: "-6px",
+    right: "-6px",
+    background: "#fda085",
     color: "#fff",
-    borderRadius: "50%",
+    fontSize: "10px",
+    fontWeight: "800",
     width: "18px",
     height: "18px",
-    fontSize: "10px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    fontWeight: "bold",
-  },
-  avatarBtn: {
-    background: "none",
-    border: "none",
-    cursor: "pointer",
-    padding: 0,
-  },
-  avatarCircle: {
-    width: "38px",
-    height: "38px",
     borderRadius: "50%",
-    background: "linear-gradient(135deg, #f6d365, #fda085)",
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    color: "#333",
-    fontWeight: "bold",
-    fontSize: "13px",
-    border: "2px solid rgba(255,255,255,0.4)",
-  },
-  dropdown: {
-    position: "absolute",
-    top: "50px",
-    right: 0,
-    background: "#fff",
-    borderRadius: "12px",
-    boxShadow: "0 8px 30px rgba(0,0,0,0.2)",
-    width: "220px",
-    overflow: "hidden",
-    zIndex: 2000,
-  },
-  dropHeader: {
-    padding: "14px 16px",
-    borderBottom: "1px solid #eee",
-    background: "#f8f9fa",
-  },
-  userName: { margin: 0, fontWeight: "700", fontSize: "14px", color: "#222" },
-  userRole: { margin: "2px 0 0", fontSize: "12px", color: "#888" },
-  dropBody: { padding: "6px 0" },
-  dropItem: {
-    display: "block",
-    width: "100%",
-    padding: "10px 16px",
-    background: "none",
-    border: "none",
-    textAlign: "left",
-    fontSize: "13px",
-    cursor: "pointer",
-    color: "#444",
-    transition: "background 0.15s",
   },
 };
