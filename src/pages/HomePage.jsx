@@ -2,7 +2,7 @@ import { useState } from "react";
 import ProductCard from "../components/ProductCard";
 import JerseyDialog from "../dialog";
 import { useCart } from "../context/CartContext";
-import { useProducts } from "../services/UseProducts";
+import { useProducts } from "../services/useProducts";
 
 export default function HomePage({ search, onSelectProduct }) {
   const [selectedProduct, setSelectedProduct] = useState(null);

@@ -5,11 +5,12 @@
 // ─────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useMemo, useCallback } from "react";
-import { fetchAllClubs } from "../services/footballApi";
+import { fetchAllClubs } from "./footballApi";
 import { demoProducts }  from "../data/demoProducts";
 
-const CACHE_KEY  = "bm_products_cache";
-const PAGE_SIZE  = 24;
+const CACHE_KEY     = "bm_products_cache";
+const CACHE_VERSION = "v3_12000"; // ← changer à chaque modification de prix
+const PAGE_SIZE     = 24;
 
 export function useProducts(search = "") {
   const [allProducts, setAllProducts]   = useState([]);
@@ -26,16 +27,18 @@ export function useProducts(search = "") {
       setLoading(true);
       setError(null);
 
-      // Vérifier le cache (valide 1h)
+      // Vérifier le cache (valide 1h + version)
       try {
         const cached = sessionStorage.getItem(CACHE_KEY);
         if (cached) {
-          const { data, ts } = JSON.parse(cached);
-          if (Date.now() - ts < 3_600_000) {
+          const { data, ts, version } = JSON.parse(cached);
+          if (version === CACHE_VERSION && Date.now() - ts < 3_600_000) {
             setAllProducts(data);
             setIsDemo(false);
             setLoading(false);
             return;
+          } else {
+            sessionStorage.removeItem(CACHE_KEY); // cache périmé ou mauvaise version
           }
         }
       } catch (_) {}
@@ -53,7 +56,7 @@ export function useProducts(search = "") {
           setIsDemo(false);
           // Mettre en cache
           try {
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: products, ts: Date.now() }));
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: products, ts: Date.now(), version: CACHE_VERSION }));
           } catch (_) {}
         }
       } catch (err) {
@@ -124,7 +127,7 @@ export function useProducts(search = "") {
           setAllProducts(products);
           setIsDemo(false);
           try {
-            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: products, ts: Date.now() }));
+            sessionStorage.setItem(CACHE_KEY, JSON.stringify({ data: products, ts: Date.now(), version: CACHE_VERSION }));
           } catch (_) {}
         }
       })

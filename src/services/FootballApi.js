@@ -39,7 +39,7 @@ function clubToProduct(team, league, index) {
     "#3a0ca3", "#f72585", "#0077b6", "#40916c",
   ];
   const color = colorPalette[index % colorPalette.length];
-  const basePrice = 10000;
+  const basePrice = 12000;
 
   return {
     id:       `club_${id}`,

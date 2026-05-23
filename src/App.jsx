@@ -3,7 +3,6 @@ import { CartProvider } from "./context/CartContext";
 import Navbar from "./components/Navbar";
 import FootballBackground from "./components/FootballBackground";
 import HomePage from "./pages/HomePage";
-import ProductDetail from "./pages/ProductDetail";
 import CartPage from "./pages/CartPage";
 
 export default function App() {
@@ -43,9 +42,9 @@ export default function App() {
           <HomePage search={search} onSelectProduct={openProduct} />
         )}
 
-        {page === "detail" && selectedProduct && (
+        {/* {page === "detail" && selectedProduct && (
           <ProductDetail product={selectedProduct} onBack={goHome} />
-        )}
+        )} */}
 
         {page === "cart" && (
           <CartPage onBack={goHome} />
