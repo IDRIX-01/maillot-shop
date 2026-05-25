@@ -1,9 +1,3 @@
-// ─────────────────────────────────────────────────────────────────
-//  useProducts.js
-//  Hook qui gère : chargement API, cache sessionStorage, pagination,
-//  filtrage par ligue/pays et recherche.
-// ─────────────────────────────────────────────────────────────────
-
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { fetchAllClubs } from "./footballApi";
 import { demoProducts }  from "../data/demoProducts";
@@ -21,13 +15,11 @@ export function useProducts(search = "") {
   const [filterLeague,  setFilterLeague]  = useState("Tous");
   const [filterCountry, setFilterCountry] = useState("Tous");
 
-  // ── 1. Chargement initial ───────────────────────────────────────
   useEffect(() => {
     async function load() {
       setLoading(true);
       setError(null);
 
-      // Vérifier le cache (valide 1h + version)
       try {
         const cached = sessionStorage.getItem(CACHE_KEY);
         if (cached) {
@@ -38,7 +30,7 @@ export function useProducts(search = "") {
             setLoading(false);
             return;
           } else {
-            sessionStorage.removeItem(CACHE_KEY); // cache périmé ou mauvaise version
+            sessionStorage.removeItem(CACHE_KEY); 
           }
         }
       } catch (_) {}
