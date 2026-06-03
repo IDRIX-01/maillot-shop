@@ -1,8 +1,177 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProductCard from "../components/ProductCard";
 import JerseyDialog from "../dialog";
 import { useCart } from "../context/CartContext";
 import { useProducts } from "../services/useProducts";
+
+const RESPONSIVE_CSS = `
+  /* ── Hero ── */
+  .bm-hero {
+    background: linear-gradient(
+      135deg,
+      rgba(15,12,41,0.96) 0%,
+      rgba(48,43,99,0.96) 50%,
+      rgba(36,36,62,0.96) 100%
+    );
+    padding: 50px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── Grille produits ── */
+  .bm-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 20px;
+  }
+
+  /* ── Filtres ── */
+  .bm-filters-bar {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 20px 24px 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Pagination ── */
+  .bm-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+
+  /* ── Footer grid ── */
+  .bm-footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 32px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  /* ── Social icons row ── */
+  .bm-social-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  /* ── Store buttons row ── */
+  .bm-store-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+  }
+
+  /* ════════════════ TABLET  ≤ 768 px ════════════════ */
+  @media (max-width: 768px) {
+    .bm-hero {
+      padding: 36px 24px;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0;
+    }
+
+    .bm-grid {
+      grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+      gap: 14px;
+    }
+
+    .bm-filters-bar {
+      padding: 16px 16px 0;
+      gap: 10px;
+    }
+
+    .bm-footer-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .bm-pagination {
+      gap: 6px;
+      margin-top: 28px;
+    }
+  }
+
+  /* ════════════════ MOBILE  ≤ 480 px ════════════════ */
+  @media (max-width: 480px) {
+    .bm-hero {
+      padding: 28px 16px 32px;
+    }
+
+    .bm-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+
+    .bm-filters-bar {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 14px 16px 0;
+    }
+
+    /* Chaque filtre prend toute la largeur */
+    .bm-filters-bar > * {
+      width: 100%;
+    }
+
+    .bm-footer-grid {
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    /* Boutons précédent/suivant plus compacts */
+    .bm-page-btn {
+      padding: 7px 12px !important;
+      font-size: 12px !important;
+    }
+
+    /* Numéros de page : masquer les extrêmes pour éviter le dépassement */
+    .bm-page-numbers {
+      gap: 2px;
+    }
+
+    .bm-page-num {
+      width: 30px !important;
+      height: 30px !important;
+      font-size: 12px !important;
+    }
+  }
+
+  /* ════════════════ TRÈS PETIT  ≤ 360 px ════════════════ */
+  @media (max-width: 360px) {
+    .bm-grid {
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+  }
+`;
+
+function InjectStyles() {
+  useEffect(() => {
+    const id = "bm-responsive-styles";
+    if (!document.getElementById(id)) {
+      const tag = document.createElement("style");
+      tag.id = id;
+      tag.textContent = RESPONSIVE_CSS;
+      document.head.appendChild(tag);
+    }
+    return () => {
+      /* Ne retire pas le style au démontage pour éviter le flash */
+    };
+  }, []);
+  return null;
+}
 
 export default function HomePage({ search, onSelectProduct }) {
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -28,8 +197,10 @@ export default function HomePage({ search, onSelectProduct }) {
 
   return (
     <div style={styles.page}>
-      {/* Hero */}
-      <div style={styles.hero}>
+      <InjectStyles />
+
+      {/* ── Hero ── */}
+      <div className="bm-hero">
         <div style={styles.heroContent}>
           <div style={styles.heroBadge}>🏆 Collection 2025</div>
           <h1 style={styles.heroTitle}>
@@ -44,7 +215,7 @@ export default function HomePage({ search, onSelectProduct }) {
         <div style={styles.heroDecor}>⚽</div>
       </div>
 
-      {/* Bandeau démo */}
+      {/* ── Bandeau démo ── */}
       {isDemo && !loading && (
         <div style={styles.demoBanner}>
           <span>
@@ -62,8 +233,8 @@ export default function HomePage({ search, onSelectProduct }) {
         </div>
       )}
 
-      {/* Filtres */}
-      <div style={styles.filtersBar}>
+      {/* ── Filtres ── */}
+      <div className="bm-filters-bar">
         <div style={styles.filterGroup}>
           <label style={styles.filterLabel}>🏆 Ligue</label>
           <select
@@ -99,7 +270,7 @@ export default function HomePage({ search, onSelectProduct }) {
         </button>
       </div>
 
-      {/* Section produits */}
+      {/* ── Section produits ── */}
       <div style={styles.section}>
         <div style={styles.sectionHeader}>
           <h2 style={styles.sectionTitle}>
@@ -112,9 +283,9 @@ export default function HomePage({ search, onSelectProduct }) {
           )}
         </div>
 
-        {/* Skeleton loader */}
+        {/* Skeleton */}
         {loading && (
-          <div style={styles.grid}>
+          <div className="bm-grid">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} style={styles.skeleton}>
                 <div style={styles.skeletonImg} />
@@ -144,9 +315,9 @@ export default function HomePage({ search, onSelectProduct }) {
           </div>
         )}
 
-        {/* Grille */}
+        {/* Grille produits */}
         {!loading && products.length > 0 && (
-          <div style={styles.grid}>
+          <div className="bm-grid">
             {products.map((product) => (
               <ProductCard
                 key={product.id}
@@ -159,8 +330,9 @@ export default function HomePage({ search, onSelectProduct }) {
 
         {/* Pagination */}
         {!loading && totalPages > 1 && (
-          <div style={styles.pagination}>
+          <div className="bm-pagination">
             <button
+              className="bm-page-btn"
               style={{ ...styles.pageBtn, opacity: page === 1 ? 0.4 : 1 }}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
@@ -168,7 +340,7 @@ export default function HomePage({ search, onSelectProduct }) {
               ← Précédent
             </button>
 
-            <div style={styles.pageNumbers}>
+            <div className="bm-page-numbers" style={styles.pageNumbers}>
               {Array.from({ length: Math.min(totalPages, 7) }, (_, i) => {
                 let num;
                 if (totalPages <= 7) {
@@ -183,6 +355,7 @@ export default function HomePage({ search, onSelectProduct }) {
                 return (
                   <button
                     key={num}
+                    className="bm-page-num"
                     style={{
                       ...styles.pageNum,
                       background: num === page ? "#302b63" : "#fff",
@@ -198,6 +371,7 @@ export default function HomePage({ search, onSelectProduct }) {
             </div>
 
             <button
+              className="bm-page-btn"
               style={{
                 ...styles.pageBtn,
                 opacity: page === totalPages ? 0.4 : 1,
@@ -221,8 +395,9 @@ export default function HomePage({ search, onSelectProduct }) {
         onAddToCart={addToCart}
       />
 
+      {/* ── Footer ── */}
       <footer style={styles.footer}>
-        <div style={styles.footerGrid}>
+        <div className="bm-footer-grid">
           <div>
             <h3 style={styles.footerHead}>Boutique de Maillot</h3>
             <p style={styles.footerText}>
@@ -241,7 +416,7 @@ export default function HomePage({ search, onSelectProduct }) {
             <p style={styles.footerText}>📧 boutiquedemaillot@ivorycoast.com</p>
             <p style={styles.footerText}>📞 +225 01 43 02 23 55</p>
             <p style={styles.footerText}>📞 +225 05 66 63 69 53</p>
-            <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+            <div className="bm-social-row">
               <a
                 href="https://wa.me/2250143022355?text=Bonjour%20je%20suis%20intéressé%20par%20un%20maillot"
                 target="_blank"
@@ -260,14 +435,7 @@ export default function HomePage({ search, onSelectProduct }) {
             <p style={styles.footerText}>
               Téléchargez notre appli gratuitement
             </p>
-            <div
-              style={{
-                display: "flex",
-                gap: "8px",
-                flexWrap: "wrap",
-                marginTop: "10px",
-              }}
-            >
+            <div className="bm-store-row">
               <span style={styles.storeBtn}>▶ Google Play</span>
               <span style={styles.storeBtn}> App Store</span>
             </div>
@@ -281,18 +449,10 @@ export default function HomePage({ search, onSelectProduct }) {
   );
 }
 
+/* ─── Styles JS (invariants) ─── */
 const styles = {
   page: { paddingTop: "66px", minHeight: "100vh", background: "transparent" },
-  hero: {
-    background:
-      "linear-gradient(135deg, rgba(15,12,41,0.96) 0%, rgba(48,43,99,0.96) 50%, rgba(36,36,62,0.96) 100%)",
-    padding: "50px 40px",
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "space-between",
-    position: "relative",
-    overflow: "hidden",
-  },
+
   heroContent: { zIndex: 1 },
   heroBadge: {
     display: "inline-block",
@@ -308,7 +468,7 @@ const styles = {
   },
   heroTitle: {
     margin: "0 0 12px",
-    fontSize: "clamp(28px, 5vw, 48px)",
+    fontSize: "clamp(24px, 5vw, 48px)",
     fontWeight: "900",
     color: "#fff",
     fontFamily: "'Georgia', serif",
@@ -319,7 +479,11 @@ const styles = {
     WebkitBackgroundClip: "text",
     WebkitTextFillColor: "transparent",
   },
-  heroSub: { color: "rgba(255,255,255,0.65)", fontSize: "14px", margin: 0 },
+  heroSub: {
+    color: "rgba(255,255,255,0.65)",
+    fontSize: "clamp(12px, 2vw, 14px)",
+    margin: 0,
+  },
   heroDecor: {
     fontSize: "clamp(60px, 10vw, 120px)",
     opacity: 0.08,
@@ -347,15 +511,6 @@ const styles = {
     marginLeft: "auto",
   },
 
-  filtersBar: {
-    maxWidth: "1280px",
-    margin: "0 auto",
-    padding: "20px 24px 0",
-    display: "flex",
-    alignItems: "flex-end",
-    gap: "16px",
-    flexWrap: "wrap",
-  },
   filterGroup: { display: "flex", flexDirection: "column", gap: "4px" },
   filterLabel: {
     fontSize: "11px",
@@ -374,6 +529,7 @@ const styles = {
     outline: "none",
     cursor: "pointer",
     minWidth: "160px",
+    width: "100%",
   },
   refreshBtn: {
     alignSelf: "flex-end",
@@ -385,18 +541,20 @@ const styles = {
     fontSize: "13px",
     fontWeight: "700",
     cursor: "pointer",
+    whiteSpace: "nowrap",
   },
 
-  section: { maxWidth: "1280px", margin: "0 auto", padding: "24px 24px 40px" },
+  section: { maxWidth: "1280px", margin: "0 auto", padding: "24px 16px 40px" },
   sectionHeader: {
     display: "flex",
     alignItems: "center",
     gap: "14px",
     marginBottom: "24px",
+    flexWrap: "wrap",
   },
   sectionTitle: {
     margin: 0,
-    fontSize: "20px",
+    fontSize: "clamp(16px, 3vw, 20px)",
     fontWeight: "800",
     color: "#1a1a2e",
     fontFamily: "'Georgia', serif",
@@ -409,14 +567,10 @@ const styles = {
     fontSize: "12px",
     fontWeight: "700",
   },
-  grid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))",
-    gap: "20px",
-  },
+
   noResult: {
     textAlign: "center",
-    padding: "60px",
+    padding: "60px 16px",
     color: "#aaa",
     fontSize: "16px",
   },
@@ -441,7 +595,7 @@ const styles = {
 
   errorBox: {
     textAlign: "center",
-    padding: "40px",
+    padding: "40px 16px",
     background: "#fff5f5",
     borderRadius: "12px",
     color: "#c62828",
@@ -458,14 +612,6 @@ const styles = {
     fontSize: "13px",
   },
 
-  pagination: {
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: "8px",
-    marginTop: "36px",
-    flexWrap: "wrap",
-  },
   pageBtn: {
     padding: "8px 18px",
     borderRadius: "8px",
@@ -493,15 +639,8 @@ const styles = {
     background:
       "linear-gradient(135deg, rgba(15,12,41,0.97), rgba(26,26,46,0.97))",
     color: "#ccc",
-    padding: "48px 40px 24px",
+    padding: "48px 24px 24px",
     marginTop: "20px",
-  },
-  footerGrid: {
-    display: "grid",
-    gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-    gap: "32px",
-    maxWidth: "1100px",
-    margin: "0 auto",
   },
   footerHead: {
     color: "#fff",
